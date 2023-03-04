@@ -24,8 +24,8 @@ export function getAnimes(req, res) {
 
 export function addAnime(req, res) {
   const { title, info, rating, review, image } = req.body
-  if(title || info || rating || review || image === "") {
-    res.status(500).json({message: "Input Fields are empty!"})
+  if((title.length || info.length || rating.length || review.length || image.length) < 1) {
+    res.status(500).json({message: "Input Fields are empty or too short!"})
     return
   }
   const newAnime = { title, info, rating, review, image, createdAt: new Date() }
@@ -39,16 +39,16 @@ export function addAnime(req, res) {
 
 // --------------------- UPDATE ---------------------
 
-// export function updateAnime(req, res) {
-//   const { animeId } = req.params
+export function updateAnime(req, res) {
+  const { animeId } = req.params
 
-//   const db = dbConnect()
-//   db.collection(collection_anime)
-//     .findOneAndUpdate({ _id: new ObjectId(animeId) }, { $set: req.body })
-//     .catch(err => res.status(500).json({ error: err.message }))
-//     .then(() => getAllCommentsInPost(req, res))
-//   // res.status(202).send({message: "Comment Updated!"})
-// }
+  const db = dbConnect()
+  db.collection(collection_anime)
+    .findOneAndUpdate({ _id: new ObjectId(animeId) }, { $set: req.body })
+    .catch(err => res.status(500).json({ error: err.message }))
+    .then(() => getAllCommentsInPost(req, res))
+  // res.status(202).send({message: "Comment Updated!"})
+}
 
 // --------------------- DELETE ---------------------
 
