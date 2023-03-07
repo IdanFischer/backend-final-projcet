@@ -1,7 +1,7 @@
 import functions from "firebase-functions"
 import express from "express"
 import cors from "cors"
-import { addAnime, deleteAnime, getAnimes, updateAnime } from "./src/animeFunctions.js"
+import { addAnime, deleteAnime, getAnimesByDate, getAnimesByRating, updateAnime } from "./src/animeFunctions.js"
 
 const app = express()
 app.use( express.json() )
@@ -9,7 +9,8 @@ app.use( cors() )
 
 app.get("/", (req, res) => res.send("The one root is real"))
 
-app.get("/anime", getAnimes)
+app.get("/anime/date", getAnimesByDate)
+app.get("/anime/rating", getAnimesByRating)
 app.post("/anime", addAnime)
 app.patch("/anime/:animeId", updateAnime)
 app.delete("/anime/:animeId", deleteAnime)

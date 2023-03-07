@@ -4,12 +4,30 @@ import { dbConnect } from "./dbConnect.js";
 
 const collection_anime = mongo_creds.COLLECTION_ANIME
 
-// --------------------- GET ---------------------
+// --------------------- GET DATE ---------------------
 
-export function getAnimes(req, res) {
+export function getAnimesByDate(req, res) {
   const db = dbConnect();
   const collection = db.collection(collection_anime)
   collection.find().sort({ createdAt: -1 }).toArray()
+    .then(docs => {
+      const anime = docs.map(doc => ({ ...doc }))
+      res.send(anime)
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).json({ error: err.message })
+    });
+}
+
+// --------------------- GET RATING ---------------------
+
+export function getAnimesByRating(req, res) {
+  const db = dbConnect();
+  const collection = db.collection(collection_anime)
+  collection.find({ rating: { $regex: /^[0-9]+:/ } }) // filter by rating values
+    .sort({ rating: -1 }) // sort in descending order
+    .toArray()
     .then(docs => {
       const anime = docs.map(doc => ({ ...doc }))
       res.send(anime)
