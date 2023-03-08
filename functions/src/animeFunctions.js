@@ -49,33 +49,58 @@ export function addAnime(req, res) {
   const newAnime = { title, info, rating, review, image, createdAt: new Date() }
   const db = dbConnect()
   db.collection(collection_anime).insertOne(newAnime)
-    .then(() => getAnimes(req, res))
+    .then(res.status(201).json({ message: 'Worked!' }))
     .catch(err => res.status(500).json({ error: err.message }))
 }
 
 
-// --------------------- UPDATE ---------------------
+// --------------------- UPDATE IF DATE---------------------
 
-export function updateAnime(req, res) {
+export function updateAnimeDate(req, res) {
   const { animeId } = req.params
   const db = dbConnect()
 
   db.collection(collection_anime)
     .findOneAndUpdate({ _id: new ObjectId(animeId) }, { $set: req.body })
-    .then(() => getAnimes(req, res))
+    .then(() => getAnimesByDate(req, res))
+    .catch(err => res.status(500).json({ error: err.message }))
+  // res.status(202).send({message: "Comment Updated!"})
+}
+
+// --------------------- UPDATE IF Rating---------------------
+
+export function updateAnimeRating(req, res) {
+  const { animeId } = req.params
+  const db = dbConnect()
+
+  db.collection(collection_anime)
+    .findOneAndUpdate({ _id: new ObjectId(animeId) }, { $set: req.body })
+    .then(() => getAnimesByRating(req, res))
     .catch(err => res.status(500).json({ error: err.message }))
   // res.status(202).send({message: "Comment Updated!"})
 }
 
 
-// --------------------- DELETE ---------------------
+// --------------------- DELETE IF DATE ---------------------
 
-export function deleteAnime(req, res) {
+export function deleteAnimeDate(req, res) {
   const { animeId } = req.params
 
   const db = dbConnect()
   db.collection(collection_anime)
     .findOneAndDelete({ _id: new ObjectId(animeId) })
+    .then(() => getAnimesByDate(req, res))
     .catch(err => res.status(500).json({ error: err.message }))
-    .then(() => getAnimes(req, res))
+}
+
+// --------------------- DELETE IF RATING ---------------------
+
+export function deleteAnimeRating(req, res) {
+  const { animeId } = req.params
+
+  const db = dbConnect()
+  db.collection(collection_anime)
+    .findOneAndDelete({ _id: new ObjectId(animeId) })
+    .then(() => getAnimesByRating(req, res))
+    .catch(err => res.status(500).json({ error: err.message }))
 }
